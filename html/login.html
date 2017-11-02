@@ -11,9 +11,11 @@
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 <body style="background-image: url('image2.jpg')">
-  <nav class="white" role="navigation" style="opacity: 0.9">
+ 
+
+  <nav class="white" role="navigation">
     <div class="nav-wrapper container">
-      <a id="logo-container" href="index.html" class="brand-logo"><img src="logo.png" height="70px"/></a>
+      <a id="logo-container" href="#" class="brand-logo"><img src="logo.png" height="70px"/></a>
       <ul class="right hide-on-med-and-down">
         <li><a href="about.html">About</a></li>
         <li><a href="contact.html">Contact</a></li>
@@ -22,9 +24,9 @@
       </ul>
 
       <ul id="nav-mobile" class="side-nav">
-        <li><a href="about.html">About</a></li>
+       <li><a href="about.html">About</a></li>
         <li><a href="contact.html">Contact</a></li>
-        <li><a href="login.html">Login</a></li>
+        <li><a href="index.html">Home</a></li>
         <li><a href="signup.html">Signup</a></li>
       </ul>
       <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
@@ -32,31 +34,34 @@
   </nav>
 
   <div style="height:100px"></div>
-    <div class="row">
-      <div class="col s4 m4"></div>
-      <div class="col s4 m4 center">
-        <div class="card hoverable">
-          <div class="card-content">
+    <style>
+      .card{
+        margin-left: auto;
+        margin-right: auto;
+        max-width:500px;
+      }
+    </style>
+        <div class="card center hoverable">
+          <div class="card-content center">
             <span class="card-title amber-text text-darken-4"><h3 class="darke">Login to Zazzy</h3></span>
             <div class=" input-field center">
               <input type="text" id="username" placeholder="Username" class="validate"><br/>
               <input type="password" id="password" placeholder="Password" class="validate"><br/>
               <a href="#" class="amber-text text-darken-4 light left">Forgot password?</a><br/>
               <span class="center amber-text text-darken-4" id="msgbox"></span>
-            </div>          
-          </div>
+            
           <div class="card-action">
             <a href="#" id="signin" class="amber darken-4 waves-effect waves-light btn">Login</a>
             <a href="signup.html" class="amber darken-4 waves-effect waves-light btn">Register</a>
           </div>
         </div>
       </div>
-      <div class="col s4 m4"></div>
     </div>
       
   </body>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"
-  ></script>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script>
     $(function(){
