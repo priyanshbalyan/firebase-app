@@ -30,8 +30,8 @@ app.get('/', (req, res)=>{
 	res.end('heelo');
 });
 
-http.listen(4000, ()=>{
-	console.log('listening on *:4000');
+http.listen(3000, ()=>{
+	console.log('listening on *:3000');
 });
 
 
