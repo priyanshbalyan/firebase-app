@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Dashboard</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body style="background-image: url('image1.png')">
+
+  <nav class="white" role="navigation" style="opacity: 0.9">
+    <div class="nav-wrapper container">
+      <a id="logo-container" href="index.html" class="brand-logo"><img src="logo.png" height="70px"/></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="login.html">Login</a></li>
+      </ul>
+
+      <ul id="nav-mobile" class="side-nav">
+        <li><a href="#">Navbar Link</a></li>
+      </ul>
+      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+    </div>
+  </nav>
+  <br/><br/>
+
+
+  <div class="row" style="height:100%">
+    <div class="col s2 m2 center">
+      <i class="large material-icons">person</i><br/>
+      <div class="center orange-text" id="userdata">
+        
+      </div>
+    </div>
+    <div class="col s10 m10">
+      
+    </div>
+  </div>
+
+
+</body>
+<script>
+  $(function(){
+    let socket = io();
+    sess = localStorage.getItem("username");
+    if(!sess)
+      window.location(login.html);
+    else{
+      $("#userdata").html(sess.username);
+    }
+  });
+</script>
+
+</html>
