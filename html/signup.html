@@ -33,7 +33,7 @@
   </nav>
   <br/><br/>
   
-  <div style="height:100px"></div>
+  <div style="height:5px"></div>
         <div class="card hoverable">
           <style>
             .card{
@@ -46,8 +46,10 @@
             <span class="card-title amber-text text-darken-4"><h3 class="darken">Signup today!</h3></span>
             
             <div class=" input-field center">
-              <input type="text" id="username" placeholder="Name" class="validate"><br/>
-              <input id="email" type="email" placeholder="E-mail" class="validate">
+              <input type="text" id="username" placeholder="Username" class="validate"><br/>
+              <input id="email" type="email" placeholder="E-mail" class="validate"><br/>
+              <input id="fullname" type="text" placeholder="Full Name" class="validate"><br/>
+              <input id="phone" type="number" placeholder="Phone Number" class="validate">
               <br/>
               <input type="password" id="password" placeholder="Password" class="validate"><br/>
               <input type="password" id="confirm_password" placeholder="Confirm Password" class="validate"><br/>
@@ -74,28 +76,42 @@
       let socket = io();
       $('#submit').on('click', function(){
         
-        if($('#password').val().length<8) return $('#msgbox').html('Password must be atleast 8 characters.');
-
         let data = {
           username:$('#username').val(),
           email:$('#email').val(),
           password:$('#password').val(),
-          confirm_password:$('#confirm_password').val()
+          confirm_password:$('#confirm_password').val(),
+          fullname:$('#fullname').val(),
+          phone:$('#phone').val()
         };
+
+        if(data.password.length<8) {
+          Materialize.toast('Password must be atleast 8 characters.');
+          return $('#msgbox').html('Password must be atleast 8 characters.');
+        }
+
+        if(data.password==""||data.username==""||data.email=="",data.phone="",data.fullname==""||data.confirm_password==""){
+          Materialize.toast('One or more field is empty. All fields are required.')
+          return;
+        }
+
         
         socket.emit('signup', data);
-        $('#name').val('');
+        $('#username').val('');
         $('#email').val('');
         $('#password').val('');
         $('#confirm_password').val('');
+        $('#fullname').val('');
+        $('#phone').val('');
       
       });
 
       socket.on('alert',(message)=>{
         console.log(message);
         $('#msgbox').html(message);
+        Materialize.toast(message, 4000);
         if(message == "Account created")
-          setTimeout(()=>window.open('index.html'),3000);
+          setTimeout(()=>window.location = 'index.html',3000);
       });
     
     });

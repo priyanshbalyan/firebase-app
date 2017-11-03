@@ -3,7 +3,7 @@
   
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/font/material-design-icons/Material-Design-Icons.woff" rel="stylesheet">
-  
+
   <style>
     header,
 main,
@@ -52,14 +52,15 @@ body {
 
 <body>
 
+
   <ul id="slide-out" class="side-nav fixed z-depth-2">
     <li class="center no-padding">
-      <div class="indigo darken-2 white-text" style="height: 180px;">
+      <div class="  amber darken-4 darken-2 white-text" style="height: 180px;">
         <div class="row">
-          <img style="margin-top: 5%;" width="100" height="100" src="https://res.cloudinary.com/dacg0wegv/image/upload/t_media_lib_thumb/v1463990208/photo_dkkrxc.png" class="circle responsive-img" />
+          <i class="large material-icons">account_circle</i>
 
-          <p style="margin-top: -13%;">
-            Tirth Patel
+          <p style="margin-top: 0%;" id="username">
+            User
           </p>
         </div>
       </div>
@@ -73,73 +74,39 @@ body {
         <div id="dash_users_body" class="collapsible-body">
           <ul>
             <li id="users_seller">
-              <a class="waves-effect" style="text-decoration: none;" href="#!">Seller</a>
+              <a class="waves-effect" style="text-decoration: none;" href="#!">Profile</a>
             </li>
 
             <li id="users_customer">
-              <a class="waves-effect" style="text-decoration: none;" href="#!">Customer</a>
+              <a class="waves-effect" style="text-decoration: none;" href="#!">Create Investment</a>
+            </li>
+            <li id="users_customer">
+              <a class="waves-effect" style="text-decoration: none;" href="#!">Current Investment</a>
             </li>
           </ul>
         </div>
       </li>
 
       <li id="dash_products">
-        <div id="dash_products_header" class="collapsible-header waves-effect"><b>Products</b></div>
-        <div id="dash_products_body" class="collapsible-body">
-          <ul>
-            <li id="products_product">
-              <a class="waves-effect" style="text-decoration: none;" href="#!">Products</a>
-              <a class="waves-effect" style="text-decoration: none;" href="#!">Orders</a>
-            </li>
-          </ul>
-        </div>
+        <div id="btn_logout" class="collapsible-header waves-effect"><b>Logout</b></div>
       </li>
 
-      <li id="dash_categories">
-        <div id="dash_categories_header" class="collapsible-header waves-effect"><b>Categories</b></div>
-        <div id="dash_categories_body" class="collapsible-body">
-          <ul>
-            <li id="categories_category">
-              <a class="waves-effect" style="text-decoration: none;" href="#!">Category</a>
-            </li>
-
-            <li id="categories_sub_category">
-              <a class="waves-effect" style="text-decoration: none;" href="#!">Sub Category</a>
-            </li>
-          </ul>
-        </div>
-      </li>
-
-      <li id="dash_brands">
-        <div id="dash_brands_header" class="collapsible-header waves-effect"><b>Brands</b></div>
-        <div id="dash_brands_body" class="collapsible-body">
-          <ul>
-            <li id="brands_brand">
-              <a class="waves-effect" style="text-decoration: none;" href="#!">Brand</a>
-            </li>
-
-            <li id="brands_sub_brand">
-              <a class="waves-effect" style="text-decoration: none;" href="#!">Sub Brand</a>
-            </li>
-          </ul>
-        </div>
-      </li>
     </ul>
-  </ul>
+  </ul> 
 
   <header>
     <ul class="dropdown-content" id="user_dropdown">
-      <li><a class="indigo-text" href="#!">Profile</a></li>
-      <li><a class="indigo-text" href="#!">Logout</a></li>
+      <li><a class="  amber-text text-darken-4" href="">Profile</a></li>
+      <li><a class="  amber-text text-darken-4" href="" id="btn_logout">Logout</a></li>
     </ul>
 
-    <nav class="indigo" role="navigation">
+    <nav class="  amber darken-4" role="navigation">
       <div class="nav-wrapper">
-        <a data-activates="slide-out" class="button-collapse show-on-" href="#!"><img style="margin-top: 17px; margin-left: 5px;" src="https://res.cloudinary.com/dacg0wegv/image/upload/t_media_lib_thumb/v1463989873/smaller-main-logo_3_bm40iv.gif" /></a>
+        <a data-activates="slide-out" class="button-collapse show-on-" href="#!"><img style="margin-top: 17px; margin-left: 5px;" src="logo.png" height="40px" /></a>
 
         <ul class="right hide-on-med-and-down">
           <li>
-            <a class='right dropdown-button' href='' data-activates='user_dropdown'><i class=' material-icons'>account_circle</i></a>
+            <a class='right dropdown-button' href='' data-activates='user_dropdown'><i class='material-icons'>account_circle</i></a>
           </li>
         </ul>
 
@@ -148,9 +115,9 @@ body {
     </nav>
 
     <nav>
-      <div class="nav-wrapper indigo darken-2">
-        <a style="margin-left: 20px;" class="breadcrumb" href="#!">Admin</a>
-        <a class="breadcrumb" href="#!">Index</a>
+      <div class="nav-wrapper   amber darken-4 darken-2">
+        <a style="margin-left: 20px;" class="breadcrumb" href="#!">User</a>
+        <a class="breadcrumb" href="" id="username"></a>
 
         <div style="margin-right: 20px;" id="timestamp" class="right"></div>
       </div>
@@ -159,120 +126,82 @@ body {
 
   <main>
     <div class="row">
-      <div class="col s6">
-        <div style="padding: 35px;" align="center" class="card">
+      <div class="col s12">
+        <div style="padding: 10px; min-height:700px" class="card">
           <div class="row">
             <div class="left card-title">
-              <b>User Management</b>
+              <h3>User Management</h3>
             </div>
           </div>
 
-          <div class="row">
-            <a href="#!">
-              <div style="padding: 30px;" class="grey lighten-3 col s5 waves-effect">
-                <i class="indigo-text text-lighten-1 large material-icons">person</i>
-                <span class="indigo-text text-lighten-1"><h5>Seller</h5></span>
-              </div>
-            </a>
-            <div class="col s1">&nbsp;</div>
-            <div class="col s1">&nbsp;</div>
+          <ul id="tabs-swipe-demo" class="tabs">
+            <li class="tab col s3">
+              <a href="#test-swipe-1" class="active amber-text text-darken-4">Profile</a></li>
+            <li class="tab col s3"><a class="amber-text text-darken-4"" href="#test-swipe-2">Create Investment</a></li>
+            <li class="tab col s3"><a href="#test-swipe-3" class="amber-text text-darken-4">Current Investment</a></li>
+          </ul>
 
-            <a href="#!">
-              <div style="padding: 30px;" class="grey lighten-3 col s5 waves-effect">
-                <i class="indigo-text text-lighten-1 large material-icons">people</i>
-                <span class="indigo-text text-lighten-1"><h5>Customer</h5></span>
-              </div>
-            </a>
+          <div id="test-swipe-1" class="col s12">
+            <div class="container" id="user_pane">
+              <h3>Details</h3>
+              <div class="row">
+                <table class="center highlight responsive-table">
+                <thead><tr>
+                  <td>Username</td><td>E-mail</td><td>Full Name</td><td>Phone</td>
+                </tr></thead>
+                <tbody><tr>
+                  <td id="table_username"></td><td id="table_email"></td><td id="table_fullname"></td><td id="table_phone"></td>
+                </tr><tbody>
+              </table>
+             </div>
           </div>
-        </div>
-      </div>
+          </div>
 
-      <div class="col s6">
-        <div style="padding: 35px;" align="center" class="card">
-          <div class="row">
-            <div class="left card-title">
-              <b>Product Management</b>
+          <div id="test-swipe-2" class="col s12">
+            <div class="container" id="investment_pane">
+              <h3>Create Investment</h3>
+              <div class="">
+                <div class="row">
+                  <div class="col s5">
+                    <div class="input-field inline">
+                      <input id="investment_amount" type="number" class="validate">
+                      <label for="investment_amount" data-error="wrong" data-success="right">Amount</label>
+                      <a id="btn_create_investment" class="left-align amber darken-4 waves-effect waves-light btn">Create Investment</a></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          
+          <div id="test-swipe-3" class="col s12">
+            <div class="container" id="current_pane">
+              <h3>Current Investments</h3>
+              <div class="center">
+                <table>
+                  <thead><tr>
+                    <td>Investment</td><td>Date</td><td>Status</td><td>Price</td>
+                  </tr></thead>
+                  <tbody>
+                  <tr>
+                    <td id="table_investment">Investment</td><td id="table_date">Date</td><td id="table_status">Status</td><td id="table_price">Price</td>
+                  </tr>
+                  <tbody>
+                </table>
+              </div>
             </div>
           </div>
-          <div class="row">
-            <a href="#!">
-              <div style="padding: 30px;" class="grey lighten-3 col s5 waves-effect">
-                <i class="indigo-text text-lighten-1 large material-icons">store</i>
-                <span class="indigo-text text-lighten-1"><h5>Product</h5></span>
-              </div>
-            </a>
 
-            <div class="col s1">&nbsp;</div>
-            <div class="col s1">&nbsp;</div>
-
-            <a href="#!">
-              <div style="padding: 30px;" class="grey lighten-3 col s5 waves-effect">
-                <i class="indigo-text text-lighten-1 large material-icons">assignment</i>
-                <span class="indigo-text text-lighten-1"><h5>Orders</h5></span>
-              </div>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col s6">
-        <div style="padding: 35px;" align="center" class="card">
-          <div class="row">
-            <div class="left card-title">
-              <b>Brand Management</b>
-            </div>
-          </div>
-
-          <div class="row">
-            <a href="#!">
-              <div style="padding: 30px;" class="grey lighten-3 col s5 waves-effect">
-                <i class="indigo-text text-lighten-1 large material-icons">local_offer</i>
-                <span class="indigo-text text-lighten-1"><h5>Brand</h5></span>
-              </div>
-            </a>
-
-            <div class="col s1">&nbsp;</div>
-            <div class="col s1">&nbsp;</div>
-
-            <a href="#!">
-              <div style="padding: 30px;" class="grey lighten-3 col s5 waves-effect">
-                <i class="indigo-text text-lighten-1 large material-icons">loyalty</i>
-                <span class="indigo-text text-lighten-1"><h5>Sub Brand</h5></span>
-              </div>
-            </a>
-          </div>
+          
         </div>
       </div>
 
-      <div class="col s6">
-        <div style="padding: 35px;" align="center" class="card">
-          <div class="row">
-            <div class="left card-title">
-              <b>Category Management</b>
-            </div>
-          </div>
-          <div class="row">
-            <a href="#!">
-              <div style="padding: 30px;" class="grey lighten-3 col s5 waves-effect">
-                <i class="indigo-text text-lighten-1 large material-icons">view_list</i>
-                <span class="indigo-text text-lighten-1"><h5>Category</h5></span>
-              </div>
-            </a>
-            <div class="col s1">&nbsp;</div>
-            <div class="col s1">&nbsp;</div>
+      <br/><br/>
+    
 
-            <a href="#!">
-              <div style="padding: 30px;" class="grey lighten-3 col s5 waves-effect">
-                <i class="indigo-text text-lighten-1 large material-icons">view_list</i>
-                <span class="truncate indigo-text text-lighten-1"><h5>Sub Category</h5></span>
-              </div>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
+    
+
+    
+      
 
     <div class="fixed-action-btn click-to-toggle" style="bottom: 45px; right: 24px;">
       <a class="btn-floating btn-large pink waves-effect waves-light">
@@ -303,7 +232,7 @@ body {
     </div>
   </main>
 
-  <footer class="indigo page-footer">
+  <footer class="  amber darken-4 page-footer">
     <div class="container">
       <div class="row">
         <div class="col s12">
@@ -321,19 +250,69 @@ body {
     </div>
     <div class="footer-copyright">
       <div class="container">
-         <span>Made By <a style='font-weight: bold;' href="https://github.com/piedcipher" target="_blank">Tirth Patel</a></span>
+         <span>Made By <a style='font-weight: bold;' href="https://github.com/piedcipher" target="_blank">User</a></span>
       </div>
     </div>
   </footer>
 </body>
+
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
   <script>
     $('.button-collapse').sideNav();
 
     $('.collapsible').collapsible();
 
     $('select').material_select();
+
+
+    $('#btn_logout').click(()=>{
+      sessionStorage.clear();
+      console.log('logout');
+      window.location = 'index.html';
+    });
+
+    $(function(){
+      let socket = io();
+      username = sessionStorage.getItem('username');
+      console.log(username);
+      if(!username) return window.location = 'login.html';
+
+      Materialize.toast('Welcome!', 4000);
+
+      $('#btn_create_investment').click(()=>{
+        if($('#investment_amount').val() == "")
+          return Materialize.toast('You need to enter an amount to create.', 4000);
+        data = {
+          amount:$('#investment_amount').val(),
+          timestamp:Date.now(),
+          username:sessionStorage.getItem('username'),
+          status:'pending'
+        };
+        socket.emit('investment', data);
+      });
+
+
+      socket.emit('dashboard', username);
+
+      socket.on('load', data=>{
+        $('#username').html(username);
+        $('#table_username').html(username);
+        $('#table_email').html(data.email);
+        $('#table_fullname').html(data.fullname);
+        $('#table_phone').html(data.phone);
+      });
+
+      socket.on('update',data=>{
+        $('table_investment').html(data.amount);
+        $('table_date').html(data.username);
+        $('table_status').html(data.status);
+        $('table_price').html(data.price);
+      });
+
+      socket.on('alert',data=>Materialize.toast(data,4000));
+    });
   </script>
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script src="js/materialize.js"></script>
-  <script src="js/init.js"></script>
 </html>

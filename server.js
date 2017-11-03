@@ -53,7 +53,10 @@ io.on('connection', (socket)=>{
 				else{
 					database.ref('database/users/'+data.username).set({
 						email:data.email,
-						password:bcrypt.hashSync(data.password, 10)
+						fullname:data.fullname,
+						phone:data.phone,
+						password:bcrypt.hashSync(data.password, 10),
+						level:'normal'
 					});
 					io.emit('alert', "Account created");
 				}
@@ -75,7 +78,26 @@ io.on('connection', (socket)=>{
 		});
 	});
 
-	socket.on('dashboard', data=>{
+	socket.on('dashboard', username=>{
+		console.log('Dashboard load', username);
+		database.ref('database/users/'+username).once('value').then(snapshot=>{
+			data = snapshot.val();
+			delete data.password;
+			io.emit('load', data);
+			//console.log(snapshot.val());
+		}).catch(err=>console.log("Error loading data. "+err.message));
 
 	});
+
+	socket.on('investment', data=>{
+		database.ref('database/wallet/'+data.timestamp).set({
+			amount:data.amount,
+			timestamp:data.timestamp,
+			created_by:data.username
+		});
+
+		io.emit('update', data);
+		io.emit('alert', 'Investment made.');
+	});
+
 });

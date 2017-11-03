@@ -59,7 +59,7 @@
     </div>
       
   </body>
-    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src="js/init.js"></script>
   <script src="/socket.io/socket.io.js"></script>
@@ -79,9 +79,11 @@
       socket.on('alert',data=>{
         //console.log(message);
         $('#msgbox').html(data.message);
+        Materialize.toast(data.message, 4000);
         if(data.success){
-          localStorage.setItem('username',data.username);
-          window.open(dashboard.html);
+          sessionStorage.setItem('username',data.username);
+          sessionStorage.setItem('sessionKey', data.password);
+          window.location = 'dashboard.html';
         }
       });
     
