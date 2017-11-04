@@ -85,16 +85,16 @@
           phone:$('#phone').val()
         };
 
-        if(data.password.length<8) {
-          Materialize.toast('Password must be atleast 8 characters.');
-          return $('#msgbox').html('Password must be atleast 8 characters.');
-        }
 
-        if(data.password==""||data.username==""||data.email=="",data.phone="",data.fullname==""||data.confirm_password==""){
+        if(data.password==""||data.username==""||data.email=="",data.phone=="",data.fullname==""||data.confirm_password==""){
           Materialize.toast('One or more field is empty. All fields are required.')
           return;
         }
 
+        if(data.password.length<8) {
+          Materialize.toast('Password must be atleast 8 characters.');
+          return $('#msgbox').html('Password must be atleast 8 characters.');
+        }
         
         socket.emit('signup', data);
         $('#username').val('');
@@ -111,7 +111,7 @@
         $('#msgbox').html(message);
         Materialize.toast(message, 4000);
         if(message == "Account created")
-          setTimeout(()=>window.location = 'index.html',3000);
+          setTimeout(()=>window.location = 'login.html',3000);
       });
     
     });

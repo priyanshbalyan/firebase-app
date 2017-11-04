@@ -44,12 +44,13 @@
         <div class="card center hoverable">
           <div class="card-content center">
             <span class="card-title amber-text text-darken-4"><h3 class="darke">Login to Zazzy</h3></span>
+            <forms action="dashboard.html">
             <div class=" input-field center">
               <input type="text" id="username" placeholder="Username" class="validate"><br/>
               <input type="password" id="password" placeholder="Password" class="validate"><br/>
               <a href="#" class="amber-text text-darken-4 light left">Forgot password?</a><br/>
               <span class="center amber-text text-darken-4" id="msgbox"></span>
-            
+              
           <div class="card-action">
             <a href="#" id="signin" class="amber darken-4 waves-effect waves-light btn">Login</a>
             <a href="signup.html" class="amber darken-4 waves-effect waves-light btn">Register</a>
@@ -72,8 +73,9 @@
           username:$('#username').val(),
           password:$('#password').val(),
         };
-        socket.emit('login', data);
 
+        socket.emit('login', data);
+        
       });
 
       socket.on('alert',data=>{
@@ -83,7 +85,12 @@
         if(data.success){
           sessionStorage.setItem('username',data.username);
           sessionStorage.setItem('sessionKey', data.password);
-          window.location = 'dashboard.html';
+          sessionStorage.setItem('privilege', data.privilege);
+          console.log(data);
+          if(data.privilege == "normal")
+            window.location = 'dashboard.html';
+          if(data.privilege == "exec")
+            window.location = 'admindashboard.html';
         }
       });
     

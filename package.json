@@ -8,6 +8,7 @@
     "express": "^4.16.2",
     "express-socket.io-session": "^1.3.2",
     "firebase": "^4.6.0",
+    "multer": "^1.3.0",
     "socket.io": "^2.0.4"
   },
   "devDependencies": {},

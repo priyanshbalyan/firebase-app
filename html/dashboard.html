@@ -96,8 +96,8 @@ body {
 
   <header>
     <ul class="dropdown-content" id="user_dropdown">
-      <li><a class="  amber-text text-darken-4" href="">Profile</a></li>
-      <li><a class="  amber-text text-darken-4" href="" id="btn_logout">Logout</a></li>
+      <li><a class="amber-text text-darken-4" href="">Profile</a></li>
+      <li id="btn_logout"><a href="index.html" class="amber-text text-darken-4" id="btn_logout">Logout</a></li>
     </ul>
 
     <nav class="  amber darken-4" role="navigation">
@@ -116,7 +116,7 @@ body {
 
     <nav>
       <div class="nav-wrapper   amber darken-4 darken-2">
-        <a style="margin-left: 20px;" class="breadcrumb" href="#!">User</a>
+        <a style="margin-left: 20px;" class="breadcrumb" href="#">User</a>
         <a class="breadcrumb" href="" id="username"></a>
 
         <div style="margin-right: 20px;" id="timestamp" class="right"></div>
@@ -130,7 +130,7 @@ body {
         <div style="padding: 10px; min-height:700px" class="card">
           <div class="row">
             <div class="left card-title">
-              <h3>User Management</h3>
+              <h4 class="amber-text text-darken-4">Account</h4>
             </div>
           </div>
 
@@ -183,7 +183,7 @@ body {
                   </tr></thead>
                   <tbody>
                   <tr>
-                    <td id="table_investment">Investment</td><td id="table_date">Date</td><td id="table_status">Status</td><td id="table_price">Price</td>
+                    <td id="table_investment"></td><td id="table_date"></td><td id="table_status"></td><td id="table_price"></td>
                   </tr>
                   <tbody>
                 </table>
@@ -280,7 +280,7 @@ body {
       console.log(username);
       if(!username) return window.location = 'login.html';
 
-      Materialize.toast('Welcome!', 4000);
+      Materialize.toast('Welcome ' + username+"!", 4000);
 
       $('#btn_create_investment').click(()=>{
         if($('#investment_amount').val() == "")
@@ -298,6 +298,7 @@ body {
       socket.emit('dashboard', username);
 
       socket.on('load', data=>{
+        
         $('#username').html(username);
         $('#table_username').html(username);
         $('#table_email').html(data.email);
@@ -305,11 +306,13 @@ body {
         $('#table_phone').html(data.phone);
       });
 
-      socket.on('update',data=>{
-        $('table_investment').html(data.amount);
-        $('table_date').html(data.username);
-        $('table_status').html(data.status);
-        $('table_price').html(data.price);
+      socket.on('update', data=>{
+        
+        $('#table_investment').html(data.amount);
+        d = new Date(data.timestamp);
+        $('#table_date').html(d.toDateString());
+        $('#table_status').html(data.status);
+        $('#table_price').html(data.price);
       });
 
       socket.on('alert',data=>Materialize.toast(data,4000));
