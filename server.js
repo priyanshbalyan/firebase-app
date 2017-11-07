@@ -31,7 +31,7 @@ http.listen(process.env.PORT || 3000, ()=>{
 });
 
 app.get('/', (req, res)=>{
-	res.end('heelo');
+	res.sendFile(__dirname+'/html/index.html');
 });
 
 // app.get('/dashboard.html', upload.array(), (req, res, next)=>{
@@ -135,6 +135,10 @@ io.on('connection', socket=>{
 			timestamp:data.timestamp,
 			created_by:data.username,
 			status:'pending'
+		});
+
+		database.ref('database/users/'+username).set({
+			wallet:
 		});
 
 		console.log('invested : ', data);
