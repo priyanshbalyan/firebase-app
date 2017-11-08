@@ -298,7 +298,7 @@ body {
         walletid.forEach(w=>{
           arr = {'pending':0, 'approved':0, 'rejected':0};
           delete arr[data[w].status];
-          str+='<tr><td>'+data[w].amount+'</td><td>'+data[w].created_by+'</td><td>'+ (new Date(data[w].timestamp)).toDateString() +'</td><td><div class="input-field"><select><option value="'+data[w].status+'" selected>'+data[w].status+'</option><option value="'+Object.keys(arr)[0]+'">'+Object.keys(arr)[0]+'</option><option value="'+Object.keys(arr)[1]+'">'+Object.keys(arr)[1]+'</option></select></div><td></td><div><input style="width:200px" id="_"'+w+' type="number" class="validate"><a id="btn_wallet_"'+w+' class="inline left-align amber darken-4 waves-effect waves-light btn">Confirm</a></td></tr>';
+          str+='<tr><td>'+data[w].amount+'</td><td>'+data[w].created_by+'</td><td>'+ (new Date(data[w].timestamp)).toDateString() +'</td><td><div class="input-field"><select name="a"><option value="'+data[w].status+'" selected>'+data[w].status+'</option><option value="'+Object.keys(arr)[0]+'">'+Object.keys(arr)[0]+'</option><option value="'+Object.keys(arr)[1]+'">'+Object.keys(arr)[1]+'</option></select></div><td></td><div><input style="width:200px" id="_"'+w+' type="number" class="validate"><a id="btn_wallet_"'+w+' class="inline left-align amber darken-4 waves-effect waves-light btn">Confirm</a></td></tr>';
         });
         $('#wallet_body').html(str);
       });

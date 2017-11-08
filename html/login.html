@@ -46,8 +46,16 @@
             <span class="card-title amber-text text-darken-4"><h3 class="darke">Login to Zazzy</h3></span>
             <forms action="dashboard.html">
             <div class=" input-field center">
-              <input type="text" id="username" placeholder="Username" class="validate"><br/>
-              <input type="password" id="password" placeholder="Password" class="validate"><br/>
+              <div class="row">
+                <div class="input-field col s12">
+                  <input type="text" id="username" class="validate">
+                  <label for="username">Username</label>
+                </div>
+                <div class="input-field col s12">
+                  <input type="password" id="password" class="validate">
+                  <label for="password">Password</label>
+                </div>
+              </div>
               <a href="#" class="amber-text text-darken-4 light left">Forgot password?</a><br/>
               <span class="center amber-text text-darken-4" id="msgbox"></span>
               

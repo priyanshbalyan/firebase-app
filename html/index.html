@@ -42,8 +42,8 @@
         
           <h1 class="header center text-lighten-2" style="font-weight: bold">Bitcoin Exchange</h1>
           <h5 class="header col center s12 light">A modern responsive front-end framework based on Material Design</h5>
-          <a class="center amber darken-4 waves-effect waves-light btn">Get Started</a>
-        
+          <a class="center amber darken-4 waves-effect waves-light btn" id="btn_get_started">Get Started</a>
+         
         
         <br><br>
 
@@ -103,7 +103,7 @@
         </div>
         
             <p class="flow-text" style="font-size: 1.1em">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam scelerisque id nunc nec volutpat. Etiam pellentesque tristique arcu, non consequat magna fermentum ac. Cras ut ultricies eros. Maecenas eros justo, ullamcorper a sapien id, viverra ultrices eros. Morbi sem neque, posuere et pretium eget, bibendum sollicitudin lacus. Aliquam eleifend sollicitudin diam, eu mattis nisl maximus sed. Nulla imperdiet semper molestie. Morbi massa odio, condimentum sed ipsum ac, gravida ultrices erat. Nullam eget dignissim mauris, non tristique erat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;</p><br/><br/>
-            <a class="center amber darken-4 waves-effect waves-light btn">Read More</a>
+            <a href="about.html" class="center amber darken-4 waves-effect waves-light btn">Read More</a>
             <br/>&nbsp;&nbsp;<br/>
          
           
@@ -137,16 +137,6 @@
               <p>63226</p>
             </div>
             <div class="col m2 light center">
-              <i class="large material-icons">attach_money</i>
-              <h6>Total Deposited</h6>
-              <p>$ 61689856.20</p>
-            </div>
-            <div class="col m2 light center">
-              <i class="large material-icons">monetization_on</i>
-              <h6>Total Withdraw</h6>
-              <p>$ 16908109.51</p>
-            </div>
-            <div class="col m2 light center">
               <i class="large material-icons">person_pin</i>
               <h6>Visitors Online</h6>
               <p>1313</p>
@@ -174,18 +164,21 @@
     position: relative !important;
   }
   </style>
-  <div class="parallax-container valign-wrapper">
+  <div class="parallax-container">
     <div class="section">
       <div class="container">
         <div class="row center">
-          <h5 class="header col m12 light cust">How to invest</h5>
+          <h5 class="header col m12 light cust">Buy Bitcoin</h5>
         </div>
-        
-            <p class="flow-text" style="font-size: 1.1em">
+            <div class="row">
+              <div class="col m12">
+                <p class="flow-text" style="font-size: 1.1em">
              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam scelerisque id nunc nec volutpat. Etiam pellentesque tristique arcu, non consequat magna fermentum ac. Cras ut ultricies eros. Maecenas eros justo, ullamcorper a sapien id, viverra ultrices eros. Morbi sem neque, posuere et pretium eget, bibendum sollicitudin lacus. Aliquam eleifend sollicitudin diam, eu mattis nisl maximus sed. Nulla imperdiet semper molestie. Morbi massa odio, condimentum sed ipsum ac, gravida ultrices erat. Nullam eget dignissim mauris, non tristique erat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;</p><br/><br/>
-            <a class="center amber darken-4 waves-effect waves-light btn">Learn More</a>
-            <br/>&nbsp;&nbsp;<br/>
-         
+                <a class="center amber darken-4 waves-effect waves-light btn">Learn More</a>
+                <br/>&nbsp;&nbsp;<br/>
+              </div>
+              
+            </div>
           
         </div>
       </div>
@@ -205,12 +198,12 @@
 
         </div>
         <div class="col l3 s12">
-          <h5 class="white-text">Settings</h5>
+          <h5 class="white-text">Links</h5>
           <ul>
-            <li><a class="white-text" href="#!">Link 1</a></li>
-            <li><a class="white-text" href="#!">Link 2</a></li>
-            <li><a class="white-text" href="#!">Link 3</a></li>
-            <li><a class="white-text" href="#!">Link 4</a></li>
+            <li><a class="white-text" href="about.html">About</a></li>
+            <li><a class="white-text" href="contact.html">Contact Us</a></li>
+            <li><a class="white-text" href="login.html">Login</a></li>
+            <li><a class="white-text" href="signup.html">Signup</a></li>
           </ul>
         </div>
         <div class="col l3 s12">
@@ -229,14 +222,49 @@
       Made by <a class="brown-text text-lighten-3" href="http://materializecss.com">Materialize</a>
       </div>
     </div>
-  </footer>
 
+  </footer>
+<style>
+  .mod{
+    z-index:99999 !important;
+    display:none;
+    position:absolute !important;
+    top:0 !important;
+    margin-top:100px;
+    transition:all 1s linear !important;
+  }
+</style>
+
+<div id="modal1" class="modal mod">
+    <div class="modal-content">
+       <div class="video-container">
+        <iframe width="853" height="480" src="//www.youtube.com/embed/Q8TXgCzxEnw?rel=0" frameborder="0" allowfullscreen autoPlay=true></iframe>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a href="signup.html" class="modal-action modal-close waves-effect waves-green btn-flat">Signup</a>
+      <a id="btn_modal_close" class="modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+    </div>
+</div>
 
   <!--  Scripts-->
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src="js/init.js"></script>
+  <script>
+    $('.modal').modal();
+  </script>
 
+  <script>
+    $('#btn_get_started').click(()=>{
+     // console.log('click');
+     $('.mod').css("display", "block");
+    });
+    $('#btn_modal_close').click(()=>{
+      // console.log('close');
+      $('.mod').css("display", "none");
+    })   
+  </script>
   </body>
 
   

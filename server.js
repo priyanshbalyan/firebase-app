@@ -137,9 +137,9 @@ io.on('connection', socket=>{
 			status:'pending'
 		});
 
-		database.ref('database/users/'+username).set({
-			wallet:
-		});
+		// database.ref('database/users/'+username).set({
+		// 	wallet:
+		// });
 
 		console.log('invested : ', data);
 		io.emit('update', data);
