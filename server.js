@@ -178,7 +178,7 @@ function updatereferrals(wid){
 		user = snapshot.val().created_by;
 		
 		database.ref('database/users/'+user).once('value').then(snapshot=>{
-			//console.log('created_by',snapshot.val().ref_from);
+			//console.log('created_bgiy',snapshot.val().ref_from);
 			database.ref('database/users/'+snapshot.val().ref_from).once('value').then(s=>{
 				//console.log(s.val());
 				upd = parseInt(s.val().deposit);
