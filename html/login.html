@@ -86,6 +86,11 @@
         
       });
 
+      $('#password').keyup(e=>{
+        if(e.keyCode === 13)
+          $('#signin').click();
+      });
+
       socket.on('alert',data=>{
         //console.log(message);
         $('#msgbox').html(data.message);

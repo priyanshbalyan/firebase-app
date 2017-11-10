@@ -67,7 +67,7 @@ io.on('connection', socket=>{
 			io.emit('alert', "Error. Passwords don't match");
 		else{
 			database.ref('database/users/'+data.username).once('value').then(snapshot=>{
-				console.log(snapshot.val());
+				//console.log(snapshot.val());
 				if(snapshot.val())
 					return io.emit('alert', 'Username already in use. Please use a different username.');
 				else{
@@ -77,8 +77,16 @@ io.on('connection', socket=>{
 						phone:data.phone,
 						password:bcrypt.hashSync(data.password, 10),
 						level:'normal',
-						acc_created:Date.now()
+						acc_created:Date.now()+""
 					});
+					console.log("refcode passed : "+data.refcode);
+					
+					if(data.refcode!=""){
+						database.ref('database/users').orderByChild('acc_created').equalTo(data.refcode).once('value', snapshot=>{
+							database.ref('database/users/'+Object.keys(snapshot.val())[0]+'/referrals').push().set(data.username);
+							database.ref('database/users/'+data.username).update({ref_from:Object.keys(snapshot.val())[0]});
+						});
+					}
 					io.emit('alert', "Account created");
 				}
 			});
@@ -134,16 +142,51 @@ io.on('connection', socket=>{
 			amount:data.amount,
 			timestamp:data.timestamp,
 			created_by:data.username,
-			status:'pending'
+			status:'pending',
+			refcheck:false
 		});
 
-		// database.ref('database/users/'+username).set({
-		// 	wallet:
-		// });
+		let ref = database.ref('database/users/'+data.username+'/walletids');
+		let newchildref = ref.push();
+		newchildref.set(data.timestamp);
 
 		console.log('invested : ', data);
-		io.emit('update', data);
+		//io.emit('update', data);
+
+		database.ref('database/users/'+data.username+'/walletids').once('value').then(snapshot=>{
+			io.emit('update', snapshot.val());
+		});
 		io.emit('alert', 'Investment made.');
 	});
 
+	socket.on('updatewallet', data=>{
+		database.ref('database/wallet/'+data.walletid).update({
+			status:data.status
+		});
+		updatereferrals(data.walletid);
+		database.ref('database/wallet/').once('value').then(snapshot=>{
+			io.emit('walletload', snapshot.val());
+		}).catch(err=>console.log(err.message));
+	});
+
 });
+
+function updatereferrals(wid){
+	if(wid.status == "Approved" && wid.refcheck==false)
+	database.ref('database/wallet/'+wid).once('value').then(snapshot=>{
+		amount = snapshot.val().amount;
+		user = snapshot.val().created_by;
+		
+		database.ref('database/users/'+user).once('value').then(snapshot=>{
+			//console.log('created_by',snapshot.val().ref_from);
+			database.ref('database/users/'+snapshot.val().ref_from).once('value').then(s=>{
+				//console.log(s.val());
+				upd = parseInt(s.val().deposit);
+				upd += 0.1*amount;
+				database.ref('database/users/'+snapshot.val().ref_from).update({deposit: upd});
+				database.ref('database/wallet/'+wid).update({refcheck:true});
+			});
+
+		});
+	});
+}

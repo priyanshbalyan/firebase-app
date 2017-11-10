@@ -178,13 +178,13 @@ body {
               <div class="center">
                 <table class="responsive-table highlight">
                   <thead><tr>
-                    <td>Investment</td><td>Created By</td><td>Date</td><td>Status</td><td>Price</td>
+                    <td>Investment</td><td>Created By</td><td>Date</td><td>Status</td><td></td>
                   </tr></thead>
                   <tbody id="wallet_body">
                   <tr>
                     <td id="table_investment"></td><td id="table_createdby"></td><td id="table_date"></td><td id="table_status"></td><td id="table_price"></td>
                   </tr>
-                  <tbody>
+                  </tbody>
                 </table>
               </div>
             </div>
@@ -296,24 +296,33 @@ body {
         walletid = Object.keys(data);
         str="";
         walletid.forEach(w=>{
-          arr = {'pending':0, 'approved':0, 'rejected':0};
-          delete arr[data[w].status];
-          str+='<tr><td>'+data[w].amount+'</td><td>'+data[w].created_by+'</td><td>'+ (new Date(data[w].timestamp)).toDateString() +'</td><td><div class="input-field"><select name="a"><option value="'+data[w].status+'" selected>'+data[w].status+'</option><option value="'+Object.keys(arr)[0]+'">'+Object.keys(arr)[0]+'</option><option value="'+Object.keys(arr)[1]+'">'+Object.keys(arr)[1]+'</option></select></div><td></td><div><input style="width:200px" id="_"'+w+' type="number" class="validate"><a id="btn_wallet_"'+w+' class="inline left-align amber darken-4 waves-effect waves-light btn">Confirm</a></td></tr>';
+          str+='<tr><td>'+data[w].amount+'</td><td>'+data[w].created_by+'</td><td>'+ (new Date(data[w].timestamp)).toDateString() +'<td>'+data[w].status+'</td>'+'<td><a class="btn red approve" id="'+w+'">Approve</a>&nbsp;<a class="btn red reject" id="'+w+'">Reject</a></td>';
         });
+
         $('#wallet_body').html(str);
+        $('.approve').click(e=>{
+          socket.emit('updatewallet',{walletid:e.target.id, status:"Approved"});
+        });
+        $('.reject').click(e=>{
+          socket.emit('updatewallet',{walletid:e.target.id, status:"Rejected"});
+        });
+
       });
 
       socket.on('userload', data=>{
         userid = Object.keys(data);
         str = "";
         userid.forEach(u=>{
-          console.log(data[u]);
-          str+='<tr><td>'+u+'</td><td>'+data[u].fullname+'</td><td>'+data[u].email+'</td><td>'+data[u].level+'</td><td>'+(new Date(data[u].acc_created)).toDateString()+'</td></tr>';
+          str+='<tr><td>'+u+'</td><td>'+data[u].fullname+'</td><td>'+data[u].email+'</td><td>'+data[u].level+'</td><td>'+(new Date(parseInt(data[u].acc_created))).toDateString()+'</td></tr>';
         });
         $('#user_body').html(str);
       });
 
       socket.on('alert',data=>Materialize.toast(data,4000));
     });
+
   </script>
+  <style>
+    .btn:active{background-color: blue !important;}
+  </style>
 </html>

@@ -71,6 +71,10 @@
                   <input type="password" id="confirm_password" class="validate">
                   <label for="confirm_password">Confirm Password</label>
                 </div>
+                <div class="input-field col s12">
+                  <input type="text" id="ref_code" class="validate">
+                  <label for="ref_code">Referral Code (If any)</label>
+                </div>
               </div>
               <span class="center amber-text text-darken-4" id="msgbox"></span>
             </div>
@@ -101,7 +105,8 @@
           password:$('#password').val(),
           confirm_password:$('#confirm_password').val(),
           fullname:$('#fullname').val(),
-          phone:$('#phone').val()
+          phone:$('#phone').val(),
+          refcode:$('#ref_code').val()
         };
 
 
@@ -123,6 +128,11 @@
         $('#fullname').val('');
         $('#phone').val('');
       
+      });
+
+      $('#ref_code').keyup(e=>{
+        if(e.keyCode === 13)
+          $('#signin').click();
       });
 
       socket.on('alert',(message)=>{
