@@ -31,7 +31,7 @@ let config = {
 firebase.initializeApp(config);
 let database = firebase.database();
 
-http.listen(process.env.PORT || 3000, 'localhost', ()=>{
+http.listen(process.env.PORT || 3000, ()=>{
 	console.log('listening on : '+(process.env.PORT||3000));
 });
 
