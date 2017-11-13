@@ -13,6 +13,11 @@ app.use(bodyParser.urlencoded({extended:true}));
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
 
+const nodemailer = require('nodemailer');
+let jwt = require('jsonwebtoken');
+
+let tokenkey = "JWT_TOKEN_KEY";
+let hostname = "";
 
 let config = {
     apiKey: "AIzaSyAZcQvDEjjoIOj4yRndpQvp2P9S5Om6UIA",
@@ -26,13 +31,16 @@ let config = {
 firebase.initializeApp(config);
 let database = firebase.database();
 
-http.listen(process.env.PORT || 3000, ()=>{
+http.listen(process.env.PORT || 3000, 'localhost', ()=>{
 	console.log('listening on : '+(process.env.PORT||3000));
 });
 
-app.get('/', (req, res)=>{
-	res.sendFile(__dirname+'/html/index.html');
-});
+// app.get('/:id', (req, res, next)=>{
+// 	res.sendFile(__dirname+'/html/index.html');
+	
+// 	// console.log(hostname);
+// 	next();
+// });
 
 // app.get('/dashboard.html', upload.array(), (req, res, next)=>{
 // 	database.ref('database/users/'+req.headers.username).once('value').then(snapshot=>{
@@ -51,7 +59,72 @@ app.get('/', (req, res)=>{
 	
 // });
 
+let smtpConfig = {
+    host: 'smtp.elasticemail.com',
+    port: 2525,
+    secure: false, // upgrade later with STARTTLS
+    auth: {
+        user: 'zazzymax2@gmail.com',
+        pass: '91a61051-5c24-4a3d-b197-a4a8ca5a8412'
+    }
+};
 
+let flag = "";
+app.get('/', (req, res)=>{
+	hostname = req.headers.host;
+	if(flag=="verify"){
+		res.sendFile(__dirname+'/html/verified.html');
+		flag = "";
+	}
+	else if(flag=="pwdreset"){
+		res.sendFile(__dirname+'/html/passwordreset.html');
+		flag="";
+	}
+	else
+		res.sendFile(__dirname+'/html/index.html');
+	
+});
+
+app.get('/verify/:id', (req, res, next)=>{
+	hostname = req.headers.host;
+	console.log(req.params.id, req.headers.host);
+	try{
+		decoded = jwt.verify(req.params.id, tokenkey);
+	}catch(err){
+		console.log(err);
+		res.redirect('/');
+	}
+	console.log(JSON.stringify(decoded));
+	if(decoded.hasOwnProperty("user")){
+		flag = "verify";
+	}
+	else
+		res.redirect('/');
+});
+
+app.get('/pwdreset', (req, res, next) =>{
+	res.redirect('/');
+});
+
+app.use((req,res,next)=>{
+	hostname = req.headers.host;
+	next();
+});
+
+app.use('/pwdreset/:id', (req, res, next)=>{
+	if(req.params.hasOwnProperty("id")){
+		try{
+			decoded = jwt.verify(req.params.id, tokenkey);
+		}catch(err){
+			console.log(err);
+			res.redirect('/');
+		}
+		console.log(decoded);
+		res.redirect('/passwordreset.html');
+	}else
+		res.redirect('/');
+
+});
 
 app.use(express.static('html'));
 
@@ -77,10 +150,27 @@ io.on('connection', socket=>{
 						phone:data.phone,
 						password:bcrypt.hashSync(data.password, 10),
 						level:'normal',
-						acc_created:Date.now()+""
+						acc_created:Date.now()+"",
+						rank:"0"
 					});
 					console.log("refcode passed : "+data.refcode);
 					
+					serializedtoken = jwt.sign({user:data.username}, tokenkey, {expiresIn: '1h'});
+					url = "http://"+hostname+'/verify/'+serializedtoken;
+					let mailOptions = {
+        				from: 'zazzymax2@gmail.com', // sender address
+        				to: data.email, // list of receivers
+        				subject: 'Email verification', // Subject line
+        				text: 'Hello '+data.fullname+'!, verify your email by clicking the following link', // plain text body
+        				html: 'Hello '+data.fullname+'!, verify your email by clicking '+'<a href="'+url+'">here.</a>' // html body
+    				};
+    				let transporter = nodemailer.createTransport(smtpConfig);
+    				transporter.sendMail(mailOptions, (error, info)=>{
+    					if(error) return console.log(error);
+    					console.log('Message sent', info.messageId);
+    					console.log('Preview URL', nodemailer.getTestMessageUrl(info));
+    				});
+
 					if(data.refcode!=""){
 						database.ref('database/users').orderByChild('acc_created').equalTo(data.refcode).once('value', snapshot=>{
 							database.ref('database/users/'+Object.keys(snapshot.val())[0]+'/referrals').push().set(data.username);
@@ -112,7 +202,15 @@ io.on('connection', socket=>{
 		console.log('Dashboard load', username);
 		database.ref('database/users/'+username).once('value').then(snapshot=>{
 			data = snapshot.val();
-			io.emit('load', data);
+			io.emit("load", data);
+			database.ref('database/requests/').once('value').then(snapshot=>{
+				if(snapshot.hasChild(username)){
+					database.ref('database/requests/'+username).once('value').then(snap=>{
+						requests = Object.keys(snap.val()).map(key=>snap.val()[key]);
+						io.emit('requests', {requests:requests, rank:data.rank});
+					});
+				}
+			});
 			//console.log(snapshot.val());
 		}).catch(err=>console.log("Error loading data. "+err.message));
 
@@ -132,8 +230,16 @@ io.on('connection', socket=>{
 		}).catch(err=>console.log(err.message));
 
 		database.ref('database/users/').once('value').then(snapshot=>{
-			io.emit('userload', snapshot.val());
+			data = snapshot.val();
+			io.emit('userload', data);
+
+			a = [];
+			for(user in data){
+  				itr(user, data, a);
+  			}
+  			io.emit('structure', a);
 		}).catch(err=>console.log(err.message));
+
 	});
 
 	socket.on('investment', data=>{
@@ -154,7 +260,14 @@ io.on('connection', socket=>{
 		//io.emit('update', data);
 
 		database.ref('database/users/'+data.username+'/walletids').once('value').then(snapshot=>{
-			io.emit('update', snapshot.val());
+			wids = Object.keys(snapshot.val()).map(k=>snapshot.val()[k]);
+			database.ref('database/wallet/').once('value').then(snap=>{
+				console.log(wids);
+				data = snap.val();
+				wids = wids.map(w=>data[w]);
+				io.emit('update', wids);
+			});
+			
 		});
 		io.emit('alert', 'Investment made.');
 	});
@@ -169,6 +282,71 @@ io.on('connection', socket=>{
 		}).catch(err=>console.log(err.message));
 	});
 
+	socket.on('rankrequest', data=>{
+		console.log("function trigger",data);
+		database.ref('database/requests').once('value', snapshot=>{
+			console.log(snapshot.val());
+			if(!snapshot.hasChild(data.to)){
+				database.ref('database/requests').child(data.to).push().set(data.requester);
+			}else{
+				database.ref('database/requests/'+data.to).push().set(data.requester);
+			}
+		});
+	});
+
+	socket.on('updaterank', data=>{
+		if(parseInt(data.newrank)>0 && parseInt(data.newrank)<17){
+			database.ref('database/users/'+data.name).update({rank:data.newrank});
+			io.emit('alert', 'Rank updated');
+
+			database.ref('database/requests/'+data.username).once('value').then(snap=>{
+			
+				k = Object.keys(snap.val())[0];
+				console.log(k, data.username, snap.val()[k]);
+				database.ref('database/requests/'+data.username+'/'+k).remove();
+			})
+		}
+		else
+			io.emit('alert', "Invalid rank.");
+
+	});
+
+	socket.on('adminupdaterank', data=>{
+		console.log(data);
+		database.ref('database/users/'+data.username).update({rank:data.newrank});
+		io.emit('alert', "Rank updated");
+		database.ref('database/users/').once('value').then(snapshot=>{
+			io.emit('userload', snapshot.val());
+		}).catch(err=>console.log(err.message));
+	});
+
+	socket.on('pwdreset', username=>{
+		database.ref('database/users/'+username).once('value').then(snapshot=>{
+			if(!snapshot.val())
+				return io.emit('toast', "No matching username found.");
+			pwdresettoken = jwt.sign({user:username}, tokenkey, {expiresIn:'1h'});
+			url = "http://"+hostname+"/pwdreset/"+pwdresettoken;			
+			//console.log(pwdresettoken, url);
+			let mailOptions = {
+        		from: 'zazzymax2@gmail.com', // sender address
+        		to: snapshot.val().email, // list of receivers
+        		subject: '(Zazzy) Password reset', // Subject line
+        		text: 'Here is your password reset link', // plain text body
+        		html: 'Here is your password reset '+'<a href="'+url+'">link</a>' // html body
+    		};
+    		let transporter = nodemailer.createTransport(smtpConfig);
+    		transporter.sendMail(mailOptions, (error, info)=>{
+    			if(error) return console.log(error);
+    			io.emit('toast', 'A password reset email has been sent to the corresponding username\'s email');
+    			console.log('Message sent', info.messageId);
+    			console.log('Preview URL', nodemailer.getTestMessageUrl(info));
+    		});
+		});
+	});
+
+	socket.on('newpwd', data=>{
+
+	});
 });
 
 function updatereferrals(wid){
@@ -189,4 +367,18 @@ function updatereferrals(wid){
 
 		});
 	});
+}
+
+function itr(u, users, a){
+	if(a.indexOf(u) == -1)
+		a.push(u);
+ 	if(!users[u].hasOwnProperty("referrals"))	
+ 		return;
+  	else{
+  		a.push("-->");
+  		for(ref in users[u].referrals){
+	    	itr(users[u].referrals[ref], users, a);
+    	}
+    	a.push("<--");
+  	}
 }

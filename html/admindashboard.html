@@ -3,7 +3,7 @@
   
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/font/material-design-icons/Material-Design-Icons.woff" rel="stylesheet">
-
+  <title>Admin Dashboard</title>
   <style>
     header,
 main,
@@ -142,7 +142,7 @@ body {
           </ul>
 
           <div id="test-swipe-1" class="col s12">
-            <div class="container" id="user_pane">
+            <div id="user_pane">
               <h3>Details</h3>
               <div class="row">
                 <table class="center highlight responsive-table">
@@ -154,18 +154,24 @@ body {
                 </tr><tbody>
               </table>
              </div>
-          </div>
+             <br/><br/>
+             <div id="ref_stucture"></div>
+            </div>
           </div>
 
           <div id="test-swipe-2" class="col s12">
-            <div class="container" id="investment_pane">
+            <div id="investment_pane">
+              <div class="input-field col s3">
+                <input id="search_box" type="text">
+                <label for="search_box">Search Username</label>
+              </div>
               <table class="responsive-table highlight striped">
                   <thead><tr>
-                    <td>Username</td><td>Full Name</td><td>E-mail</td><td>Level</td><td>Account Created</td>
+                    <td>Username</td><td>Full Name</td><td>E-mail</td><td>Level</td><td>Account Created</td>Rank</td><td>Set Rank</td>
                   </tr></thead>
                   <tbody id="user_body">
                   <tr>
-                    <td id="table_investment"></td><td id="table_createdby"></td><td id="table_date"></td><td id="table_status"></td><td id="table_price"></td>
+                    <td id="table_investment"></td><td id="table_createdby"></td><td id="table_date"></td><td id="table_status"></td><td id="table_price"></td><td></td>
                   </tr>
                   <tbody>
                 </table>
@@ -173,7 +179,7 @@ body {
             </div>
           
           <div id="test-swipe-3" class="col s12">
-            <div class="container" id="current_pane">
+            <div id="current_pane">
               <h3>Pending Investments</h3>
               <div class="center">
                 <table class="responsive-table highlight">
@@ -273,8 +279,9 @@ body {
       window.location = 'index.html';
     });
 
+    let d;
     $(function(){
-      let socket = io();
+      socket = io();
       username = sessionStorage.getItem('username');
       privilege = sessionStorage.getItem('privilege');
       console.log(username);
@@ -310,15 +317,59 @@ body {
       });
 
       socket.on('userload', data=>{
+        d= data;
         userid = Object.keys(data);
         str = "";
         userid.forEach(u=>{
-          str+='<tr><td>'+u+'</td><td>'+data[u].fullname+'</td><td>'+data[u].email+'</td><td>'+data[u].level+'</td><td>'+(new Date(parseInt(data[u].acc_created))).toDateString()+'</td></tr>';
+          str+='<tr><td>'+u+'</td><td>'+data[u].fullname+'</td><td>'+data[u].email+'</td><td>'+data[u].level+'</td><td>'+(new Date(parseInt(data[u].acc_created))).toDateString()+'</td><td>'+(data[u].rank=="0"?"No Rank":data[u].rank)+'</td><td><a class="btn red setrank" id="'+u+'">Set Rank</a></td></tr>';
+
         });
         $('#user_body').html(str);
+
+        $('#search_box').on('input',()=>{
+          term = $('#search_box').val();
+          userid = Object.keys(d);
+          if(term != "")
+            userid = userid.filter(u=>u.startsWith(term));
+          str = "";
+          userid.forEach(u=>{
+          str+='<tr><td>'+u+'</td><td>'+d[u].fullname+'</td><td>'+d[u].email+'</td><td>'+d[u].level+'</td><td>'+(new Date(parseInt(d[u].acc_created))).toDateString()+'</td><td>'+(d[u].rank=="0"?"No Rank":d[u].rank)+'</td><td><a class="btn red setrank" id="'+u+'">Set Rank</a></td></tr>';
+          });
+          
+          $('#user_body').html(str);          
+        });
+
+        $('.setrank').click(e=>{
+          newrank = prompt("Enter new rank.");
+          if(parseInt(newrank)>=0 && parseInt(newrank) <=25)
+            socket.emit("adminupdaterank", {newrank:newrank, username:e.target.id});
+          else
+            Materialize.toast('You need to enter a valid rank.', 4000);
+        });
+
+      });
+
+      socket.on('structure', data=>{
+        console.log(data);
+        sp = []
+        str = "";
+        data.forEach(arr=>{
+          if(arr=="-->")
+            sp.push("<i class='material-icons'>subdirectory_arrow_right</i>");
+          else if(arr=="<--")
+            sp.shift();
+          else{
+            str+=sp.join("");
+            str+=arr;
+            str+="<br/>";
+          }
+          
+        });
+        $('#ref_stucture').html(str);
       });
 
       socket.on('alert',data=>Materialize.toast(data,4000));
+      
     });
 
   </script>

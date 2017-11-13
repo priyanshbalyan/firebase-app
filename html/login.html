@@ -15,7 +15,7 @@
 
   <nav class="white" role="navigation">
     <div class="nav-wrapper container">
-      <a id="logo-container" href="#" class="brand-logo"><img src="logo.png" height="70px"/></a>
+      <a id="logo-container" href="index.html" class="brand-logo"><img src="logo.png" height="70px"/></a>
       <ul class="right hide-on-med-and-down">
         <li><a href="about.html">About</a></li>
         <li><a href="contact.html">Contact</a></li>
@@ -56,12 +56,13 @@
                   <label for="password">Password</label>
                 </div>
               </div>
-              <a href="#" class="amber-text text-darken-4 light left">Forgot password?</a><br/>
+              <span style="cursor:pointer" id="fgtpwd" class="amber-text text-darken-4 light left">Forgot password?</span><br/>
               <span class="center amber-text text-darken-4" id="msgbox"></span>
               
           <div class="card-action">
             <a href="#" id="signin" class="amber darken-4 waves-effect waves-light btn">Login</a>
             <a href="signup.html" class="amber darken-4 waves-effect waves-light btn">Register</a>
+            <br><h6 id="#toastbox" class="amber-text text-darken-2"></h6>
           </div>
         </div>
       </div>
@@ -73,6 +74,8 @@
   <script src="js/init.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script>
+
+
     $(function(){
       let socket = io();
       $('#signin').on('click', function(){
@@ -89,6 +92,19 @@
       $('#password').keyup(e=>{
         if(e.keyCode === 13)
           $('#signin').click();
+      });
+
+      $('#fgtpwd').click(e=>{
+        if($('#username').val()==""){
+          return Materialize.toast("Enter your username in the field.", 4000);
+        }
+
+        socket.emit('pwdreset', $('#username').val());
+      });
+
+      socket.on('toast', data=>{
+        Materialize.toast(data, 4000);
+        $('#msgbox').html(data);
       });
 
       socket.on('alert',data=>{

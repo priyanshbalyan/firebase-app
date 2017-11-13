@@ -3,7 +3,7 @@
   
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/font/material-design-icons/Material-Design-Icons.woff" rel="stylesheet">
-
+  <title>Dashboard</title>
   <style>
     header,
 main,
@@ -148,14 +148,20 @@ body {
               <div class="row">
                 <table class="center highlight responsive-table">
                 <thead><tr>
-                  <td>Username</td><td>E-mail</td><td>Full Name</td><td>Phone</td><td>Deposit</td>
+                  <td>Username</td><td>E-mail</td><td>Full Name</td><td>Phone</td><td>Deposit</td><td>Rank</td>
                 </tr></thead>
                 <tbody><tr>
-                  <td id="table_username"></td><td id="table_email"></td><td id="table_fullname"></td><td id="table_phone"><td id="table_deposit"></td>
+                  <td id="table_username"></td><td id="table_email"></td><td id="table_fullname"></td><td id="table_phone"><td id="table_deposit"></td><td id="table_rank"></td>
                 </tr><tbody>
               </table>
              </div>
              <span id="refcode"></span>
+             <br/><br/>
+             <a id="btn_rank_req" class="btn waves-effect indigo darken-2"></a>
+             <div class="section">
+               <h4>Requests</h4>
+               <span id="req_details"></span>
+             </div>
           </div>
           </div>
 
@@ -183,7 +189,7 @@ body {
                   <thead><tr>
                     <td>Investment</td><td>Date</td><td>Status</td><td>Price</td>
                   </tr></thead>
-                  <tbody>
+                  <tbody id="tbody_investment">
                   <tr>
                     <td id="table_investment"></td><td id="table_date"></td><td id="table_status"></td><td id="table_price"></td>
                   </tr>
@@ -285,12 +291,12 @@ body {
 
     $('select').material_select();
 
-
     $('#btn_logout').click(()=>{
       sessionStorage.clear();
       console.log('logout');
       window.location = 'index.html';
     });
+
 
     $(function(){
       let socket = io();
@@ -312,7 +318,6 @@ body {
         socket.emit('investment', data);
       });
 
-
       socket.emit('dashboard', username);
 
       socket.on('load', data=>{
@@ -324,28 +329,100 @@ body {
         $('#table_phone').html(data.phone);
         $('#refcode').html("Your referral code is : "+data.acc_created);
         $('#table_deposit').html(data.deposit);
+        $('#table_rank').html(((data.rank=="0")?"No rank":data.rank));
 
-        let arr = Object.keys(data.referrals);
-        if(arr){
-          str = "";
-          arr.forEach(a=>{
-            str+='<td>'+data.referrals[a]+'</td><td><a class="btn indigo waves-effect>Set Rank</a></td>';
-          });
+        if(data.rank=="0"){
+            $('#btn_rank_req').html("Request Rank");
+            $('#btn_rank_req').click(()=>{
+              //console.log('click');
+              if(data.hasOwnProperty("ref_from"))
+                socket.emit("rankrequest",{requester:username, to:data.ref_from});
+              else
+                socket.emit('adminrequest', {requester:username});
+              $('#btn_rank_req').html("Request Sent");
+              $('#btn_rank_req').addClass('disabled');
+            });
+            
         }else
-          str = "No referrals";
+          $('#btn_rank_req').hide();
+
+
+        if(data.hasOwnProperty("referrals")){
+          let arr = Object.keys(data.referrals);
+          if(arr){
+            str = "";
+            arr.forEach(a=>{
+              str+='<td>'+data.referrals[a]+'</td><td><a class="btn indigo waves-effect>Set Rank</a></td>';
+            });
+          }else
+            str = "No referrals";
+        }else str = "No referrals";
         $('#ref_body').html(str);
       });
 
-      socket.on('update', data=>{
+      $('#req_details').html("No requests");
+      socket.on('requests', r=>{
+        console.log(r.requests);
+        if(r.requests != []){
+          str = "";
+          r.requests.forEach(d=>{
+            str += selectbox(r.rank, d)+'<br/>';
+          });
+        $('#req_details').html(str);
+        $('.dropdown-button').dropdown({
+          inDuration: 300,
+          outDuration: 225,
+          constrainWidth: false, // Does not change width of dropdown to that of the activator
+          hover: false, // Activate on hover
+          gutter: 0, // Spacing from edge
+          belowOrigin: false, // Displays dropdown below the button
+          alignment: 'left', // Displays dropdown with edge aligned to the left of button
+          stopPropagation: false // Stops event propagation
+        }
+  );
+       
         
-        $('#table_investment').html(data.amount);
-        d = new Date(data.timestamp);
-        $('#table_date').html(d.toDateString());
-        $('#table_status').html(data.status);
-        $('#table_price').html(data.price);
+        }else
+          $('#req_details').html("No requests");
+        
+        $('.rankval').click(e=>{
+          console.log(e.target.id);
+          arr = e.target.id.split("_a_");
+            socket.emit("updaterank", {name:arr[0], newrank:arr[1], username:username});
+          
+          $('.rval_'+arr[0]).addClass("disabled");
+        });
+
       });
 
-      socket.on('alert',data=>Materialize.toast(data,4000));
+      socket.on('update', data=>{
+        console.log(JSON.stringify(data));
+        str = "";
+        data.forEach(d=>{
+          if(d!=null)
+            str+='<tr><td>'+d.amount+'</td><td>'+(new Date(d.timestamp)).toUTCString()+'</td><td>'+d.status+'</td></tr>';
+        })
+        $('#tbody_investment').html(str);
+  
+      });
+
+      socket.on('alert',data=>{
+        Materialize.toast(data,4000);
+      });
     });
+
+    function selectbox(num, d){
+      num = parseInt(num);
+      str = "";
+      str+='<a class="rval_'+d+' dropdown-button btn indigo" data-activates="dropdown1">'+d+'</a><ul id="dropdown1" class="dropdown-content">';
+      for(let i=1 ; i<=num; i++){
+        str+='<li><a class="rankval" id="'+d+'_a_'+i+'">'+i+'</a></li>';
+      }
+      str+='</ul>';
+      //console.log(num, str);
+      return str;
+    }
+
+    
   </script>
 </html>
