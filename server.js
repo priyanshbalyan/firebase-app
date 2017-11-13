@@ -71,9 +71,7 @@ let smtpConfig = {
 
 let flag = "";
 
-app.get('/', (req, res)=>{
-	res.send(__dirname+'/html/index.html');
-})
+
 // app.get('/', (req, res)=>{
 // 	hostname = req.headers.host;
 // 	if(flag=="verify"){
