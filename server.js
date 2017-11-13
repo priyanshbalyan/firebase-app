@@ -70,20 +70,20 @@ let smtpConfig = {
 };
 
 let flag = "";
-app.get('/', (req, res)=>{
-	hostname = req.headers.host;
-	if(flag=="verify"){
-		res.sendFile(__dirname+'/html/verified.html');
-		flag = "";
-	}
-	else if(flag=="pwdreset"){
-		res.sendFile(__dirname+'/html/passwordreset.html');
-		flag="";
-	}
-	else
-		res.sendFile(__dirname+'/html/index.html');
+// app.get('/', (req, res)=>{
+// 	hostname = req.headers.host;
+// 	if(flag=="verify"){
+// 		res.sendFile(__dirname+'/html/verified.html');
+// 		flag = "";
+// 	}
+// 	else if(flag=="pwdreset"){
+// 		res.sendFile(__dirname+'/html/passwordreset.html');
+// 		flag="";
+// 	}
+// 	else
+// 		res.sendFile(__dirname+'/html/index.html');
 	
-});
+// });
 
 app.get('/verify/:id', (req, res, next)=>{
 	hostname = req.headers.host;
