@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Verified</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body style="background-image: url('image2.jpg')">
+ 
+
+  <nav class="white" role="navigation">
+    <div class="nav-wrapper container">
+      <a id="logo-container" href="#" class="brand-logo"><img src="logo.png" height="70px"/></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="signup.html">Signup</a></li>
+      </ul>
+
+      <ul id="nav-mobile" class="side-nav">
+       <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="signup.html">Signup</a></li>
+      </ul>
+      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+    </div>
+  </nav>
+
+  <div style="height:100px"></div>
+    <style>
+      .card{
+        margin-left: auto;
+        margin-right: auto;
+        max-width:500px;
+      }
+    </style>
+        <div class="card center hoverable">
+          <div class="card-content center">
+            <span class="card-title amber-text text-darken-4"><h3 class="darke">Login to Zazzy</h3></span>
+            <h6 class="amber-text text-darken-2 center">Successfully verified</h6>
+            <forms action="dashboard.html">
+            <div class=" input-field center">
+              <div class="row">
+                <div class="input-field col s12">
+                  <input type="text" id="username" class="validate">
+                  <label for="username">Username</label>
+                </div>
+                <div class="input-field col s12">
+                  <input type="password" id="password" class="validate">
+                  <label for="password">Password</label>
+                </div>
+              </div>
+              <a href="#" class="amber-text text-darken-4 light left">Forgot password?</a><br/>
+              <span class="center amber-text text-darken-4" id="msgbox"></span>
+              
+          <div class="card-action">
+            <a href="#" id="signin" class="amber darken-4 waves-effect waves-light btn">Login</a>
+            <a href="signup.html" class="amber darken-4 waves-effect waves-light btn">Register</a>
+          </div>
+        </div>
+      </div>
+    </div>
+      
+  </body>
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+
+    $(document).ready(()=>{
+      Materialize.toast("Successfully verified.", 4000);
+    });
+
+    $(function(){
+      let socket = io();
+      $('#signin').on('click', function(){
+        
+        let data = {
+          username:$('#username').val(),
+          password:$('#password').val(),
+        };
+
+        socket.emit('login', data);
+        
+      });
+
+      $('#password').keyup(e=>{
+        if(e.keyCode === 13)
+          $('#signin').click();
+      });
+
+      socket.on('alert',data=>{
+        //console.log(message);
+        $('#msgbox').html(data.message);
+        Materialize.toast(data.message, 4000);
+        if(data.success){
+          sessionStorage.setItem('username',data.username);
+          sessionStorage.setItem('sessionKey', data.password);
+          sessionStorage.setItem('privilege', data.privilege);
+          console.log(data);
+          if(data.privilege == "normal")
+            window.location = 'dashboard.html';
+          if(data.privilege == "exec")
+            window.location = 'admindashboard.html';
+        }
+      });
+    
+    });
+  </script>
+</html>
