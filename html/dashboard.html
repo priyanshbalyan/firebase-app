@@ -1,4 +1,8 @@
 <head>
+  <script>
+    username = sessionStorage.getItem('username');
+    if(!username) return window.location = 'login.html';
+  </script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css" rel="stylesheet">

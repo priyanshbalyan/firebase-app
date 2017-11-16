@@ -153,7 +153,8 @@ io.on('connection', socket=>{
 						password:bcrypt.hashSync(data.password, 10),
 						level:'normal',
 						acc_created:Date.now()+"",
-						rank:"0"
+						rank:"0",
+						deposit:"0"
 					});
 					console.log("refcode passed : "+data.refcode);
 					
@@ -278,7 +279,9 @@ io.on('connection', socket=>{
 		database.ref('database/wallet/'+data.walletid).update({
 			status:data.status
 		});
-		updatereferrals(data.walletid);
+		database.ref('database/wallet/'+data.walletid).once('value').then(snapshot=>{
+			updatereferrals(data.walletid, snapshot.val());
+		});
 		database.ref('database/wallet/').once('value').then(snapshot=>{
 			io.emit('walletload', snapshot.val());
 		}).catch(err=>console.log(err.message));
@@ -351,23 +354,47 @@ io.on('connection', socket=>{
 	});
 });
 
-function updatereferrals(wid){
-	if(wid.status == "Approved" && wid.refcheck==false)
-	database.ref('database/wallet/'+wid).once('value').then(snapshot=>{
-		amount = snapshot.val().amount;
-		user = snapshot.val().created_by;
-		
-		database.ref('database/users/'+user).once('value').then(snapshot=>{
-			//console.log('created_bgiy',snapshot.val().ref_from);
-			database.ref('database/users/'+snapshot.val().ref_from).once('value').then(s=>{
-				//console.log(s.val());
-				upd = parseInt(s.val().deposit);
-				upd += 0.1*amount;
-				database.ref('database/users/'+snapshot.val().ref_from).update({deposit: upd});
-				database.ref('database/wallet/'+wid).update({refcheck:true});
-			});
+function updatereferrals(wid, data){
+	console.log("trigger update", wid);
+	if(data.status == "Approved" && data.refcheck==false)
+		database.ref('database/wallet/'+wid).once('value').then(snapwallet=>{
+			amount = parseInt(snapwallet.val().amount);
+			user = snapwallet.val().created_by;
+			console.log(amount, user);
+			database.ref('database/users/'+user).once('value').then(snapuser1=>{
+				rank1 = parseInt(snapuser1.val().rank);
+				
+				newdeposit = parseFloat(snapuser1.val().deposit) + amount;
+				database.ref('database/users/'+user).update({deposit: newdeposit});
 
+				user2 = snapuser1.val().ref_from;
+				console.log(user2);
+				
+				refloop(user2, rank1);
+
+			});
 		});
+}
+
+function refloop(user2, rank1){
+	console.log("looping");
+	if(!user2) return;
+	database.ref('database/users/'+user2).once('value').then(s=>{
+		console.log(s.val());     //user detail of the user the investor referred from
+		rank2 = parseInt(s.val().rank);
+		rankupd = (rank2-rank1)*0.0025*amount;
+		console.log(rank1, rank2);
+		upd = parseFloat(s.val().deposit)+rankupd;
+		console.log(rankupd, upd);
+		database.ref('database/users/'+user2).update({deposit: upd});
+		if(s.val().hasOwnProperty("ref_from"))
+			user2 = s.val().ref_from;
+		else
+			user2 = null;
+		rank1 = s.val().rank;
+		refloop(user2, rank1);
+		console.log(user2);
+//		database.ref('database/wallet/'+wid).update({refcheck:true});
 	});
 }
 
