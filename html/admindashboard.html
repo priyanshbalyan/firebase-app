@@ -167,7 +167,7 @@ body {
               </div>
               <table class="responsive-table highlight striped">
                   <thead><tr>
-                    <td>Username</td><td>Full Name</td><td>E-mail</td><td>Level</td><td>Account Created</td>Rank</td><td>Set Rank</td>
+                    <td>Username</td><td>Full Name</td><td>E-mail</td><td>Level</td><td>Account Created</td><td>Rank</td><td>Set Rank</td>
                   </tr></thead>
                   <tbody id="user_body">
                   <tr>
@@ -240,22 +240,35 @@ body {
   <footer class="  red darken-4 page-footer">
     <div class="container">
       <div class="row">
-        <div class="col s12">
-          <h5 class="white-text"></h5>
-          <ul id='credits'>
-            <li>
-              <a href="https://formtypemaker.appspot.com/" title="Form Type Maker"></a><a href="https://github.com/romannurik/FORMTypeMaker" title="romannurik"></a>
-            </li>
-            <li>
-              <a href="https://material.io/icons/"></a><a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank"></a>
-            </li>
+        <div class="col l6 s12">
+          <h5 class="white-text">Company Bio</h5>
+          <p class="grey-text text-lighten-4">We are a team of college students working on this project like it's our full time job. Any amount would help support and continue development on this project and is greatly appreciated.</p>
+
+
+        </div>
+        <div class="col l3 s12">
+          <h5 class="white-text">Links</h5>
+          <ul>
+            <li><a class="white-text" href="about.html">About</a></li>
+            <li><a class="white-text" href="contact.html">Contact Us</a></li>
+            <li><a class="white-text" href="login.html">Login</a></li>
+            <li><a class="white-text" href="signup.html">Signup</a></li>
+          </ul>
+        </div>
+        <div class="col l3 s12">
+          <h5 class="white-text">Connect</h5>
+          <ul>
+            <i class="material-icons white-text">phone</i>&nbsp;&nbsp;&nbsp;
+            <i class="material-icons white-text">email</i>&nbsp;&nbsp;&nbsp;
+            <i class="material-icons white-text">message</i>&nbsp;&nbsp;&nbsp;
+            <i class="material-icons white-text">person</i>
           </ul>
         </div>
       </div>
     </div>
     <div class="footer-copyright">
       <div class="container">
-         <span>Made By <a style='font-weight: bold;' href="https://github.com/piedcipher" target="_blank">User</a></span>
+      Made by <a class="brown-text text-lighten-3" href="http://materializecss.com">Materialize</a>
       </div>
     </div>
   </footer>
@@ -302,6 +315,8 @@ body {
       socket.on('walletload', data=>{
         walletid = Object.keys(data);
         str="";
+        walletid.sort();
+        walletid.reverse();
         walletid.forEach(w=>{
           str+='<tr><td>'+data[w].amount+'</td><td>'+data[w].created_by+'</td><td>'+ (new Date(data[w].timestamp)).toDateString() +'<td>'+data[w].status+'</td>'+'<td><a class="btn red approve" id="'+w+'">Approve</a>&nbsp;<a class="btn red reject" id="'+w+'">Reject</a></td>';
         });
@@ -320,6 +335,7 @@ body {
         d= data;
         userid = Object.keys(data);
         str = "";
+        userid.sort();
         userid.forEach(u=>{
           str+='<tr><td>'+u+'</td><td>'+data[u].fullname+'</td><td>'+data[u].email+'</td><td>'+data[u].level+'</td><td>'+(new Date(parseInt(data[u].acc_created))).toDateString()+'</td><td>'+(data[u].rank=="0"?"No Rank":data[u].rank)+'</td><td><a class="btn red setrank" id="'+u+'">Set Rank</a></td></tr>';
 

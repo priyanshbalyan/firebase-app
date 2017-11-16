@@ -16,6 +16,9 @@ let io = require('socket.io')(http);
 const nodemailer = require('nodemailer');
 let jwt = require('jsonwebtoken');
 
+let validator = require('validator');
+
+
 let tokenkey = "JWT_TOKEN_KEY";
 let hostname = "";
 
@@ -140,11 +143,14 @@ io.on('connection', socket=>{
 		//console.log(data);
 		if(data.password != data.confirm_password)
 			io.emit('alert', "Error. Passwords don't match");
+		if(!validator.isEmail(data.email))
+			io.emit('alert', "Wrong E-mail format.");
 		else{
 			database.ref('database/users/'+data.username).once('value').then(snapshot=>{
 				//console.log(snapshot.val());
 				if(snapshot.val())
 					return io.emit('alert', 'Username already in use. Please use a different username.');
+
 				else{
 					database.ref('database/users/'+data.username).set({
 						email:data.email,
@@ -172,8 +178,9 @@ io.on('connection', socket=>{
     					if(error) return console.log(error);
     					console.log('Message sent', info.messageId);
     					console.log('Preview URL', nodemailer.getTestMessageUrl(info));
+    					
     				});
-
+    				io.emit('toast', "A verification mail has been sent to your E-mail.");
 					if(data.refcode!=""){
 						database.ref('database/users').orderByChild('acc_created').equalTo(data.refcode).once('value', snapshot=>{
 							database.ref('database/users/'+Object.keys(snapshot.val())[0]+'/referrals').push().set(data.username);
@@ -214,6 +221,17 @@ io.on('connection', socket=>{
 					});
 				}
 			});
+
+			console.log(snapshot.val());
+			wids = Object.keys(snapshot.val().walletids).map(k=>snapshot.val().walletids[k]);
+			database.ref('database/wallet/').once('value').then(snap=>{
+				console.log(wids);
+				data = snap.val();
+				wids.sort(); wids.reverse();
+				wids = wids.map(w=>data[w]);
+				io.emit('update', wids);
+			});
+			
 			//console.log(snapshot.val());
 		}).catch(err=>console.log("Error loading data. "+err.message));
 
@@ -265,7 +283,7 @@ io.on('connection', socket=>{
 		database.ref('database/users/'+data.username+'/walletids').once('value').then(snapshot=>{
 			wids = Object.keys(snapshot.val()).map(k=>snapshot.val()[k]);
 			database.ref('database/wallet/').once('value').then(snap=>{
-				console.log(wids);
+				//console.log(wids);
 				data = snap.val();
 				wids = wids.map(w=>data[w]);
 				io.emit('update', wids);
@@ -277,7 +295,7 @@ io.on('connection', socket=>{
 
 	socket.on('updatewallet', data=>{
 		database.ref('database/wallet/'+data.walletid).update({
-			status:data.status
+			status:data.status, refcheck:true
 		});
 		database.ref('database/wallet/'+data.walletid).once('value').then(snapshot=>{
 			updatereferrals(data.walletid, snapshot.val());
@@ -368,7 +386,7 @@ function updatereferrals(wid, data){
 				database.ref('database/users/'+user).update({deposit: newdeposit});
 
 				user2 = snapuser1.val().ref_from;
-				console.log(user2);
+				//console.log(user2);
 				
 				refloop(user2, rank1);
 
@@ -380,7 +398,7 @@ function refloop(user2, rank1){
 	console.log("looping");
 	if(!user2) return;
 	database.ref('database/users/'+user2).once('value').then(s=>{
-		console.log(s.val());     //user detail of the user the investor referred from
+		//console.log(s.val());     //user detail of the user the investor referred from
 		rank2 = parseInt(s.val().rank);
 		rankupd = (rank2-rank1)*0.0025*amount;
 		console.log(rank1, rank2);
@@ -394,7 +412,7 @@ function refloop(user2, rank1){
 		rank1 = s.val().rank;
 		refloop(user2, rank1);
 		console.log(user2);
-//		database.ref('database/wallet/'+wid).update({refcheck:true});
+
 	});
 }
 

@@ -135,6 +135,8 @@
           $('#signin').click();
       });
 
+      socket.on('toast', message=>Materialize.toast(message, 4000));
+
       socket.on('alert',(message)=>{
         console.log(message);
         $('#msgbox').html(message);

@@ -80,11 +80,13 @@
       let socket = io();
       $('#signin').on('click', function(){
         
+
         let data = {
           username:$('#username').val(),
           password:$('#password').val(),
         };
 
+        if(data.username=="" || data.password=="") return Materialize.toast("You need to enter both username and password.", 4000);
         socket.emit('login', data);
         
       });
