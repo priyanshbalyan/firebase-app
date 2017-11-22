@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const firebase = require('firebase');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt-nodejs');
 
 let bodyParser = require('body-parser');
 let multer = require('multer');
@@ -156,7 +156,7 @@ io.on('connection', socket=>{
 						email:data.email,
 						fullname:data.fullname,
 						phone:data.phone,
-						password:bcrypt.hashSync(data.password, 10),
+						password:bcrypt.hashSync(data.password),
 						level:'normal',
 						acc_created:Date.now()+"",
 						rank:"0",
@@ -198,6 +198,7 @@ io.on('connection', socket=>{
 	socket.on('login', data=>{
 		console.log('login event');
 		database.ref('database/users/'+data.username).once('value').then(snapshot=>{
+			//console.log(snapshot.val().password, bcrypt.compare(data.password))
 			if(!snapshot || !bcrypt.compareSync(data.password, snapshot.val().password))	 
 				return io.emit('alert', {message:'Incorrect username or password',username:"", success:false});
 
@@ -318,19 +319,21 @@ io.on('connection', socket=>{
 	});
 
 	socket.on('updaterank', data=>{
-		if(parseInt(data.newrank)>0 && parseInt(data.newrank)<17){
-			database.ref('database/users/'+data.name).update({rank:data.newrank});
-			io.emit('alert', 'Rank updated');
-
-			database.ref('database/requests/'+data.username).once('value').then(snap=>{
+		console.log("function triggered", data);
+		database.ref('database/users/'+data.username).once('value').then(snap=>{
+			if(parseInt(data.newrank)>0 && parseInt(data.newrank)<snap.val().rank){
+				database.ref('database/users/'+data.name).update({rank:data.newrank});
+				io.emit('alert', 'Rank updated');
+				database.ref('database/requests/'+data.username).once('value').then(snap=>{
 			
-				k = Object.keys(snap.val())[0];
-				console.log(k, data.username, snap.val()[k]);
-				database.ref('database/requests/'+data.username+'/'+k).remove();
-			})
-		}
-		else
-			io.emit('alert', "Invalid rank.");
+					k = Object.keys(snap.val())[0];
+					console.log(k, data.username, snap.val()[k]);
+					database.ref('database/requests/'+data.username+'/'+k).remove();
+				})
+			}
+			else
+				io.emit('alert', "Invalid rank.");
+		});
 
 	});
 

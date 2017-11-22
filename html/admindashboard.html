@@ -324,9 +324,13 @@ body {
         $('#wallet_body').html(str);
         $('.approve').click(e=>{
           socket.emit('updatewallet',{walletid:e.target.id, status:"Approved"});
+          $('.approve').addClass("disabled");
+          $('.reject').addClass("disabled");
         });
         $('.reject').click(e=>{
           socket.emit('updatewallet',{walletid:e.target.id, status:"Rejected"});
+          $('.approve').addClass("disabled");
+          $('.reject').addClass("disabled");
         });
 
       });

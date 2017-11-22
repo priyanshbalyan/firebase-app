@@ -17,15 +17,15 @@
     <div class="nav-wrapper container">
       <a id="logo-container" href="#" class="brand-logo"><img src="logo.png" height="70px"/></a>
       <ul class="right hide-on-med-and-down">
-        <li><a href="about.html">About</a></li>
-        <li><a href="contact.html">Contact</a></li>
+        <li class="dash1"><a href="about.html">About</a></li>
+        <li class="dash2"><a href="contact.html">Contact</a></li>
         <li><a href="login.html">Login</a></li>
         <li><a href="signup.html">Signup</a></li>
       </ul>
 
       <ul id="nav-mobile" class="side-nav">
-       <li><a href="about.html">About</a></li>
-        <li><a href="contact.html">Contact</a></li>
+       <li class="dash1"><a href="about.html">About</a></li>
+        <li clas="dash2"><a href="contact.html">Contact</a></li>
         <li><a href="login.html">Login</a></li>
         <li><a href="signup.html">Signup</a></li>
       </ul>
@@ -155,15 +155,13 @@
     <div class="section">
       <div class="container">
         <div class="row center">
-          <h5 class="header col m12 light cust">Buy Bitcoin</h5>
+          <h5 class="header col m12 light cust">Why Bitcoin</h5>
         </div>
             <div class="row">
               <div class="col m12">
-                <p class="flow-text" style="font-size: 1.1em">
-             Buy, sell, trade, store 30 cryptocurrencies, altcoins, tokens like Bitcoin (BTC) , Ethereum (ETH) , Ripple (XRP), Litecoin (LTC), Neo(NEO), Bitcoin Cash (BCC) and many more directly with Rupees (INR) in India.<br/>
-             We provide best rates, wallet &amp; security for the digital currency.
-</p><br/><br/>
-                <a class="center amber darken-4 waves-effect waves-light btn">Learn More</a>
+                <div class="video-container">
+                  <iframe width="853" height="480" src="//www.youtube.com/embed/Um63OQz3bjo?rel=0" frameborder="0" allowfullscreen></iframe>
+                </div>
                 <br/>&nbsp;&nbsp;<br/>
               </div>
               
@@ -182,7 +180,7 @@
       <div class="row">
         <div class="col l6 s12">
           <h5 class="white-text">Company Bio</h5>
-          <p class="grey-text text-lighten-4">We are a team of college students working on this project like it's our full time job. Any amount would help support and continue development on this project and is greatly appreciated.</p>
+          <p class="grey-text text-lighten-4">We are passionate about acheieving financial goals through our unique system that allows us to become one of the fastest and successful Crypto-Exchange in India by Feb 2017.</p>
 
 
         </div>
@@ -252,7 +250,12 @@
     $('#btn_modal_close').click(()=>{
       // console.log('close');
       $('.mod').css("display", "none");
-    })   
+    })
+
+    // if(sessionStorage.getItem("username")){
+    //   $('dash1').html('');
+    //   $('dash2').html('<a href="dashboard.html">Dashboard</a>');
+    // }
   </script>
 
   <script type="text/javascript" src="//api.venew.io/wnew.js?wc=venyoo/default/science&widget_id=6416371935870976"></script>

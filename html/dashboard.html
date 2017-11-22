@@ -1,7 +1,8 @@
 <head>
   <script>
     username = sessionStorage.getItem('username');
-    if(!username) return window.location = 'login.html';
+    if(!username) 
+      window.location = 'login.html';
   </script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   
@@ -70,22 +71,25 @@ body {
       </div>
     </li>
 
-    <li id="dash_dashboard"><a class="waves-effect" href="#!"><b>Dashboard</b></a></li>
+    <li id="dash_dashboard"><a class="waves-effect" href=""><b>Dashboard</b></a></li>
 
     <ul class="collapsible" data-collapsible="accordion">
       <li id="dash_users">
-        <div id="dash_users_header" class="collapsible-header waves-effect"><b>Users</b></div>
+        <div id="dash_users_header" class="collapsible-header waves-effect"><b>User</b></div>
         <div id="dash_users_body" class="collapsible-body">
           <ul>
             <li id="users_seller">
-              <a class="waves-effect" style="text-decoration: none;" href="#!">Profile</a>
+              <a class="waves-effect navbuttons" id="dash1" style="text-decoration: none;">Profile</a>
             </li>
 
             <li id="users_customer">
-              <a class="waves-effect" style="text-decoration: none;" href="#!">Create Investment</a>
+              <a class="waves-effect navbuttons" id="dash2" style="text-decoration: none;">Create Investment</a>
             </li>
             <li id="users_customer">
-              <a class="waves-effect" style="text-decoration: none;" href="#!">Current Investment</a>
+              <a class="waves-effect navbuttons" id="dash3" style="text-decoration: none;">Current Investment</a>
+            </li>
+            <li id="users_customer">
+              <a class="waves-effect navbuttons" id="dash4" style="text-decoration: none;">Referrals</a>
             </li>
           </ul>
         </div>
@@ -369,51 +373,58 @@ body {
           if(arr){
             str = "";
             arr.forEach(a=>{
-              str+='<td>'+data.referrals[a]+'</td><td><a class="btn indigo waves-effect>Set Rank</a></td>';
+              //console.log(a);
+              str+='<tr><td>'+data.referrals[a]+'</td><td><button class="btn_set_rank btn indigo waves-effect" id="'+data.referrals[a]+'">Set Rank</button></td></tr>';
             });
           }else
             str = "No referrals";
         }else str = "No referrals";
+        
         $('#ref_body').html(str);
+
+        $('.btn_set_rank').click(e=>{
+          console.log(e.target.id);
+            arg = prompt("Enter new rank");
+            socket.emit("updaterank", {name:e.target.id, newrank:arg, username:username});
+          
+          if(parseInt(arg)>0 && parseInt(arg)<data.rank){
+            $('#'+e.target.id).attr("disabled", "disabled");
+            $('#'+e.target.id).addClass("disabled");
+          }
+        });
+      
       });
 
       $('#req_details').html("No requests");
       socket.on('requests', r=>{
-        console.log(r.requests);
+        //console.log(r.requests);
         if(r.requests != []){
           str = "";
           r.requests.forEach(d=>{
             str += selectbox(r.rank, d)+'<br/>';
           });
-        $('#req_details').html(str);
-        $('.dropdown-button').dropdown({
-          inDuration: 300,
-          outDuration: 225,
-          constrainWidth: false, // Does not change width of dropdown to that of the activator
-          hover: false, // Activate on hover
-          gutter: 0, // Spacing from edge
-          belowOrigin: false, // Displays dropdown below the button
-          alignment: 'left', // Displays dropdown with edge aligned to the left of button
-          stopPropagation: false // Stops event propagation
-        }
-  );
-       
+          $('#req_details').html(str);
+          $('.dropdown-button').dropdown({
+            inDuration: 300,
+            outDuration: 225,
+            constrainWidth: false, // Does not change width of dropdown to that of the activator
+            hover: false, // Activate on hover
+            gutter: 0, // Spacing from edge
+            belowOrigin: false, // Displays dropdown below the button
+            alignment: 'left', // Displays dropdown with edge aligned to the left of button
+            stopPropagation: false // Stops event propagation
+          });
         
         }else
           $('#req_details').html("No requests");
-        
-        $('.rankval').click(e=>{
-          console.log(e.target.id);
-          arr = e.target.id.split("_a_");
-            socket.emit("updaterank", {name:arr[0], newrank:arr[1], username:username});
-          
-          $('.rval_'+arr[0]).addClass("disabled");
-        });
 
+       
       });
 
+
+
       socket.on('update', data=>{
-        console.log(JSON.stringify(data));
+        //console.log(JSON.stringify(data));
         str = "";
         data.forEach(d=>{
           if(d!=null)
@@ -441,5 +452,18 @@ body {
     }
 
     
+    $('.navbuttons').click(e=>{
+      switch(e.target.id){
+        case 'dash1': $('ul.tabs').tabs('select_tab', 'test-swipe-1');
+          break;
+        case 'dash2': $('ul.tabs').tabs('select_tab', 'test-swipe-2');
+          break;
+        case 'dash3': $('ul.tabs').tabs('select_tab', 'test-swipe-3');
+          break;
+        case 'dash4': $('ul.tabs').tabs('select_tab', 'test-swipe-4');
+          break;
+      }
+    });
+      
   </script>
 </html>
