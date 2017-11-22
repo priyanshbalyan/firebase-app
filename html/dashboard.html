@@ -1,9 +1,22 @@
-<head>
+<html>
+
+  <head>
   <script>
     username = sessionStorage.getItem('username');
     if(!username) 
       window.location = 'login.html';
   </script>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-110075852-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-110075852-1');
+  </script>
+
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css" rel="stylesheet">
@@ -269,7 +282,7 @@ body {
       <div class="row">
         <div class="col l6 s12">
           <h5 class="white-text">Company Bio</h5>
-          <p class="grey-text text-lighten-4">We are a leading company that focuses on the Cryptocurrency sector. Our goal is to achieve the highest return from the activity on the Cryptocurrency exchange market. If you would like to enter the world of online Cryptocurrency trading with modern Cloud Mining platform then you are on your right way. Investments with Zazzy are affordable and safe. Our team works tirelessly to ensure that each and every one of our clients receives the attention they deserve and reaches great success and growth throughout their investment career.</p>
+          <p class="grey-text text-lighten-4">We are a leading company that focuses on the Cryptocurrency sector. Our goal is to achieve the highest return from the activity on the Cryptocurrency exchange market.  Investments with Zazzy are affordable and safe.</p>
 
 
         </div>
@@ -323,6 +336,7 @@ body {
       let socket = io();
       username = sessionStorage.getItem('username');
       //console.log(username);
+      btcprice = sessionStorage.getItem('btc_price');
       if(!username) return window.location = 'login.html';
 
       Materialize.toast('Welcome ' + username+"!", 4000);
@@ -349,7 +363,7 @@ body {
         $('#table_fullname').html(data.fullname);
         $('#table_phone').html(data.phone);
         $('#refcode').html("Your referral code is : "+data.acc_created);
-        $('#table_deposit').html(data.deposit);
+        $('#table_deposit').html(data.deposit+' ('+parseFloat(data.deposit/btcprice)+' BTC)');
         $('#table_rank').html(((data.rank=="0")?"No rank":data.rank));
 
         if(data.rank=="0"){
@@ -418,9 +432,7 @@ body {
         }else
           $('#req_details').html("No requests");
 
-       
       });
-
 
 
       socket.on('update', data=>{
@@ -428,7 +440,7 @@ body {
         str = "";
         data.forEach(d=>{
           if(d!=null)
-            str+='<tr><td>'+d.amount+'</td><td>'+(new Date(d.timestamp)).toUTCString()+'</td><td>'+d.status+'</td></tr>';
+            str+='<tr><td>'+d.amount+' ('+parseFloat(d.amount/btcprice)+' BTC)</td><td>'+(new Date(d.timestamp)).toUTCString()+'</td><td>'+d.status+'</td></tr>';
         })
         $('#tbody_investment').html(str);
   
